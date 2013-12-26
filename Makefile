@@ -1,3 +1,5 @@
+CFLAGS=-Wall -g
+
 all:
 	cc ex1.c -o ex1
 
