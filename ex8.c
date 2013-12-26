@@ -1,3 +1,9 @@
+/**
+ * Learn C The Hard Way
+ *
+ * Exercise 8: Sizes And Arrays
+ */
+
 #include <stdio.h>
 
 int main(int argc, char *argv[])
