@@ -15,6 +15,7 @@ all:
 	cc ex13.c -o ./bin/ex13
 	cc ex14.c -o ./bin/ex14
 	cc ex15.c -o ./bin/ex15
+	cc ex16.c -o ./bin/ex16
 
 clean:
 	rm bin/*
