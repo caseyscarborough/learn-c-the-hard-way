@@ -19,6 +19,10 @@ struct Database {
 };
 
 struct Connection {
+    /**
+     * FILE is a struct, just like we are creating here, but it is defined by
+     * the C Standard Library.
+     */
     FILE *file;
     struct Database *db;
 };
@@ -40,6 +44,20 @@ void Address_print(struct Address *addr)
 
 void Database_load(struct Connection *conn)
 {
+    /**
+     * fread is a function in stdio.h that reads data in from from a given 
+     * stream into the array pointed to by ptr. The following is its 
+     * declaration:
+     *    size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
+     * Parameters:
+     *   ptr - This is the pointer to a block of memory with a minimum size of size*nmemb bytes.
+     *   size - This is the size in bytes of each element to be read.
+     *   nmemb - This is the number of elements, each one with a size of size bytes.
+     *   stream - This is the pointer to a FILE object that specifies an input stream.
+     * The total number of elements successfully read is returned as a size_t object, in
+     * this case it should be 1.
+     * See http://www.cplusplus.com/reference/cstdio/fread/
+     */
     int rc = fread(conn->db, sizeof(struct Database), 1, conn->file);
     if(rc != 1) die("Failed to load database.");
 }
@@ -53,6 +71,11 @@ struct Connection *Database_open(const char *filename, char mode)
     if(!conn->db) die("Memory error");
 
     if(mode == 'c') {
+        /**
+         * fopen is a file function declared in stdio.h that opens and reads
+         * a file in different modes, such as write (w), read (r), etc.
+         * See http://www.cplusplus.com/reference/cstdio/fopen/
+         */
         conn->file = fopen(filename, "w");
     } else {
         conn->file = fopen(filename, "r+");
@@ -69,6 +92,17 @@ struct Connection *Database_open(const char *filename, char mode)
 void Database_close(struct Connection *conn)
 {
     if(conn) {
+        /**
+         * fclose closes a stream, and flushes all buffers.
+         * Declaration:
+         *   int fclose(FILE *stream)
+         * Parameters:
+         *   stream - This is the pointer to a FILE object that specifies
+         *   the stream to be closed.
+         * This method returns zero if the stream is successfully closed.
+         * On failure, EOF is returned.
+         * See http://www.cplusplus.com/reference/cstdio/fclose/
+         */
         if(conn->file) fclose(conn->file);
         if(conn->db) free(conn->db);
         free(conn);
@@ -79,9 +113,25 @@ void Database_write(struct Connection *conn)
 {
     rewind(conn->file);
 
+    /**
+     * fwrite writes data from a given array into the given stream.
+     * Declaration:
+     *   size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
+     * Parameters:
+     *   ptr - This is the pointer to the array of elements to be written.
+     *   size - This is the size in bytes of each element to be written.
+     *   nmemb - This is the number of elements, each one with a size of size bytes.
+     *   stream - This is the pointer to a FILE object that specifies an output stream.
+     * Returns the total number of elements successfully written, in our case, 1.
+     * See http://www.cplusplus.com/reference/cstdio/fwrite/
+     */
     int rc = fwrite(conn->db, sizeof(struct Database), 1, conn->file);
     if(rc != 1) die("Failed to write database.");
 
+    /**
+     * fflush flushes the output buffer of a stream, and returns 0 on success.
+     * See http://www.cplusplus.com/reference/cstdio/fflush/
+     */
     rc = fflush(conn->file);
     if(rc == -1) die("Cannot flush database.");
 }
@@ -104,7 +154,15 @@ void Database_set(struct Connection *conn, int id, const char *name, const char 
     if(addr->set) die("Already set, delete it first");
 
     addr->set = 1;
-
+    /**
+     * strncpy copies the first num characters of source to destination.
+     * WARNING: bug, read the "How To Break It" and fix this
+     * No null-character is implicitly appended at the end of destination
+     * if source is longer than num. Thus, in this case, destination shall
+     * not be considered a null terminated C string (reading it as such
+     * would overflow).
+     * See http://www.cplusplus.com/reference/cstring/strncpy/
+     */
     char *res = strncpy(addr->name, name, MAX_DATA);
     // Demonstrate the strncpy bug.
     if(!res) die("Name copy failed");
@@ -137,7 +195,6 @@ void Database_list(struct Connection *conn)
 
     for(i = 0; i < MAX_ROWS; i++) {
         struct Address *cur = &db->rows[i];
-
         if(cur->set) {
             Address_print(cur);
         }
