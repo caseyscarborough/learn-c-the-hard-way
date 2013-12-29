@@ -204,6 +204,13 @@ void Database_list(struct Connection *conn)
     }
 }
 
+/**
+ * This method performs a find on the names and emails in the
+ * the database, and prints out the results if they are found.
+ * Parameters:
+ *   conn - A pointer to the Connection.
+ *   find - The term to find.
+ */
 void Database_find(struct Connection *conn, const char *find)
 {
     int i = 0;
@@ -212,6 +219,11 @@ void Database_find(struct Connection *conn, const char *find)
     for(i = 0; i < MAX_ROWS; i++) {
         struct Address *cur = &db->rows[i];
         if(cur->set) {
+            /**
+             * strstr searches a "string" for an instance of another "string",
+             * and returns a pointer to the first instance of the string found.
+             * It returns NULL if nothing was found.
+             */
             if(strstr(cur->name, find) != NULL) {
                 Address_print(cur);
             } else if(strstr(cur->email, find) != NULL) {
