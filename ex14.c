@@ -1,3 +1,9 @@
+/**
+ * Learn C The Hard Way
+ *
+ * Exercise 14: Writing And Using Functions
+ */
+
 #include <stdio.h>
 #include <ctype.h>
 
