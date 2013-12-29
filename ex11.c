@@ -1,3 +1,9 @@
+/**
+ * Learn C The Hard Way
+ *
+ * Exercise 11: While-Loop And Boolean Expressions
+ */
+
 #include <stdio.h>
 
 int main(int argc, char *argv[])

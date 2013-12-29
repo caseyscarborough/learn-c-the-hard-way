@@ -1,3 +1,9 @@
+/**
+ * Learn C The Hard Way
+ *
+ * Exercise 10: Arrays of Strings, Looping
+ */
+
 #include <stdio.h>
 
 int main(int argc, char *argv[])
