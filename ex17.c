@@ -204,9 +204,26 @@ void Database_list(struct Connection *conn)
     }
 }
 
+void Database_find(struct Connection *conn, const char *find)
+{
+    int i = 0;
+    struct Database *db = conn->db;
+
+    for(i = 0; i < MAX_ROWS; i++) {
+        struct Address *cur = &db->rows[i];
+        if(cur->set) {
+            if(strstr(cur->name, find) != NULL) {
+                Address_print(cur);
+            } else if(strstr(cur->email, find) != NULL) {
+                Address_print(cur);
+            }
+        }
+    }
+}
+
 int main(int argc, char *argv[])
 {
-    struct Connection *conn;
+    struct Connection *conn = NULL;
     if(argc < 3) die("USAGE: ex17 <dbfile> <action> [action params]", conn);
 
     char *filename = argv[1];
@@ -241,6 +258,12 @@ int main(int argc, char *argv[])
 
             Database_delete(conn, id);
             Database_write(conn);
+            break;
+
+        case 'f':
+            if(argc != 4) die("Need a term to find by", conn);
+
+            Database_find(conn, argv[3]);
             break;
 
         case 'l':
